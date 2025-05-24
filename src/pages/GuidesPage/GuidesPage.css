@@ -1,0 +1,165 @@
+.guides-page {
+  width: 100%;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.page-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.page-header p {
+  font-size: 1.1rem;
+  color: #718096;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.free-guides-section,
+.paid-guides-section,
+.guide-bundles-section,
+.additional-services-section {
+  margin-bottom: 4rem;
+}
+
+.free-guides-section h2,
+.paid-guides-section h2,
+.guide-bundles-section h2,
+.additional-services-section h2 {
+  font-size: 1.75rem;
+  margin-bottom: 2rem;
+  color: #1a365d;
+  text-align: center;
+}
+
+.guides-grid,
+.bundles-grid,
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.guide-card,
+.bundle-card,
+.service-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.guide-card:hover,
+.bundle-card:hover,
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.guide-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #1a365d;
+}
+
+.guide-price {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background-color: #1a365d;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.guide-card h3,
+.bundle-card h3,
+.service-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #1a365d;
+}
+
+.guide-description,
+.service-description {
+  color: #4a5568;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.guide-details,
+.bundle-details,
+.service-details {
+  margin-bottom: 1.5rem;
+}
+
+.guide-details h4,
+.bundle-details h4 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: #1a365d;
+}
+
+.guide-details ul,
+.bundle-details ul {
+  padding-right: 1.5rem;
+}
+
+.guide-details li,
+.bundle-details li {
+  margin-bottom: 0.5rem;
+  color: #4a5568;
+}
+
+.guide-importance {
+  color: #4a5568;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  font-style: italic;
+  border-right: 3px solid #1a365d;
+  padding-right: 1rem;
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 4px;
+}
+
+.bundle-price {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.current-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a365d;
+}
+
+.original-price {
+  font-size: 1.1rem;
+  color: #718096;
+  text-decoration: line-through;
+}
+
+.service-details p {
+  margin-bottom: 0.5rem;
+  color: #4a5568;
+}
+
+@media (max-width: 768px) {
+  .guides-grid,
+  .bundles-grid,
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+}
