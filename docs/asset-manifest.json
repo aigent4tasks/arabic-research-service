@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/arabic-research-service/static/css/main.acba600d.css",
+    "main.js": "/arabic-research-service/static/js/main.1bb84271.js",
+    "index.html": "/arabic-research-service/index.html",
+    "main.acba600d.css.map": "/arabic-research-service/static/css/main.acba600d.css.map",
+    "main.1bb84271.js.map": "/arabic-research-service/static/js/main.1bb84271.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.acba600d.css",
+    "static/js/main.1bb84271.js"
+  ]
+}

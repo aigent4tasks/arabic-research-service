@@ -1,6 +1,6 @@
 {
   "name": "ars-academic-service",
-  "homepage": "https://aigent4tasks.github.io/ars-academic-service",
+  "homepage": "https://aigent4tasks.github.io/arabic-research-service/",
   "version": "1.0.0",
   "description": "منصة خدمة الباحث الأكاديمي",
   "main": "index.js",
