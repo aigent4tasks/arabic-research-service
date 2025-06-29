@@ -13,6 +13,7 @@ import BlogPage from './pages/BlogPage/BlogPage';
 import GuidesPage from './pages/GuidesPage/GuidesPage';
 import AboutPage from './pages/AboutPage/AboutPage';
 import ContactPage from './pages/ContactPage/ContactPage';
+import DashboardPage from './pages/DashboardPage/DashboardPage';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             <Route path="/guides" element={<GuidesPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
           </Routes>
         </main>
         <Footer />
