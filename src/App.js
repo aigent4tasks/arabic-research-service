@@ -5,6 +5,7 @@ import './styles/global.css';
 // Components
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
+import ProtectedRoute from './components/common/ProtectedRoute';
 
 // Pages
 import HomePage from './pages/HomePage/HomePage';
@@ -13,6 +14,7 @@ import BlogPage from './pages/BlogPage/BlogPage';
 import GuidesPage from './pages/GuidesPage/GuidesPage';
 import AboutPage from './pages/AboutPage/AboutPage';
 import ContactPage from './pages/ContactPage/ContactPage';
+import LoginPage from './pages/LoginPage/LoginPage';
 import DashboardPage from './pages/DashboardPage/DashboardPage';
 
 function App() {
@@ -28,7 +30,12 @@ function App() {
             <Route path="/guides" element={<GuidesPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/contact" element={<ContactPage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            } />
           </Routes>
         </main>
         <Footer />

@@ -6,7 +6,7 @@ import AboutSection from '../../components/home/AboutSection';
 import TestimonialsSection from '../../components/home/TestimonialsSection';
 import BooksSection from '../../components/books/BooksSection';
 import BlogPostsSection from '../../components/blog/BlogPostsSection';
-import MotivationalArticlesSection from '../../components/motivational/MotivationalArticlesSection';
+import AcademicServicesSection from '../../components/academic/AcademicServicesSection';
 
 function HomePage() {
   return (
@@ -46,14 +46,19 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Motivational Articles Section */}
+      {/* Academic Services Section */}
       <section className="home-section">
         <div className="container">
           <div className="section-header">
-            <h2>مقالات تحفيزية</h2>
-            <p>مقالات ملهمة لتحفيز الباحثين وتطوير مهاراتهم</p>
+            <h2>خدماتنا الأكاديمية</h2>
+            <p>خدمات متخصصة لدعم الباحثين في رحلتهم الأكاديمية</p>
           </div>
-          <MotivationalArticlesSection limit={3} />
+          <AcademicServicesSection limit={3} />
+          <div className="section-footer">
+            <a href="#/services" className="view-all-btn">
+              عرض جميع الخدمات
+            </a>
+          </div>
         </div>
       </section>
 
@@ -64,3 +69,4 @@ function HomePage() {
 }
 
 export default HomePage;
+

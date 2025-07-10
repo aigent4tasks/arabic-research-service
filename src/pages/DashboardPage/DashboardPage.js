@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './DashboardPage.css';
 
-// Firebase services
+// Supabase services
 import { 
   getAllBooks, 
   addBook, 
@@ -15,17 +16,20 @@ import {
   deleteBlogPost 
 } from '../../services/blogPostsService';
 import { 
-  getAllMotivationalArticles, 
-  addMotivationalArticle, 
-  updateMotivationalArticle, 
-  deleteMotivationalArticle 
-} from '../../services/motivationalArticlesService';
+  getAllAcademicServices, 
+  addAcademicService, 
+  updateAcademicService, 
+  deleteAcademicService 
+} from '../../services/academicServicesService';
+import { adminLogout, getCurrentUser } from '../../services/supabase/authService';
 
 const DashboardPage = () => {
+  const navigate = useNavigate();
+  
   // States for different content types
   const [books, setBooks] = useState([]);
   const [blogPosts, setBlogPosts] = useState([]);
-  const [motivationalArticles, setMotivationalArticles] = useState([]);
+  const [academicServices, setAcademicServices] = useState([]);
   
   // Active tab state
   const [activeTab, setActiveTab] = useState('books');
@@ -39,11 +43,22 @@ const DashboardPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  
+  // User state
+  const [currentUser, setCurrentUser] = useState(null);
 
   // Load data on component mount
   useEffect(() => {
+    loadUserData();
     loadAllData();
   }, []);
+
+  const loadUserData = async () => {
+    const result = await getCurrentUser();
+    if (result.success) {
+      setCurrentUser(result.adminData);
+    }
+  };
 
   const loadAllData = async () => {
     setLoading(true);
@@ -426,10 +441,27 @@ const DashboardPage = () => {
     );
   };
 
+  const handleLogout = async () => {
+    const result = await adminLogout();
+    if (result.success) {
+      navigate('/login');
+    }
+  };
+
   return (
     <div className="dashboard-page">
       <div className="dashboard-container">
-        <h1>لوحة التحكم</h1>
+        <div className="dashboard-header">
+          <h1>لوحة التحكم</h1>
+          {currentUser && (
+            <div className="user-info">
+              <span>مرحباً، {currentUser.name}</span>
+              <button onClick={handleLogout} className="logout-btn">
+                تسجيل الخروج
+              </button>
+            </div>
+          )}
+        </div>
         
         {/* Notifications */}
         {error && <div className="alert alert-error">{error}</div>}
