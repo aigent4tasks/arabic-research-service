@@ -63,15 +63,15 @@ const DashboardPage = () => {
   const loadAllData = async () => {
     setLoading(true);
     try {
-      const [booksResult, blogPostsResult, articlesResult] = await Promise.all([
+      const [booksResult, blogPostsResult, academicServicesResult] = await Promise.all([
         getAllBooks(),
         getAllBlogPosts(),
-        getAllMotivationalArticles()
+        getAllAcademicServices()
       ]);
 
       if (booksResult.success) setBooks(booksResult.data);
       if (blogPostsResult.success) setBlogPosts(blogPostsResult.data);
-      if (articlesResult.success) setMotivationalArticles(articlesResult.data);
+      if (academicServicesResult.success) setAcademicServices(academicServicesResult.data);
     } catch (err) {
       setError('خطأ في تحميل البيانات');
     }
@@ -90,6 +90,11 @@ const DashboardPage = () => {
   const handleTagsChange = (e) => {
     const tags = e.target.value.split(',').map(tag => tag.trim()).filter(tag => tag);
     setFormData(prev => ({ ...prev, tags }));
+  };
+
+  const handleFeaturesChange = (e) => {
+    const features = e.target.value.split(',').map(feature => feature.trim()).filter(feature => feature);
+    setFormData(prev => ({ ...prev, features }));
   };
 
   const resetForm = () => {
@@ -124,11 +129,17 @@ const DashboardPage = () => {
         } else {
           result = await addBlogPost(formData);
         }
-      } else if (activeTab === 'motivationalArticles') {
+      } else if (activeTab === 'academicServices') {
+        const serviceData = {
+          ...formData,
+          price: parseFloat(formData.price) || 0,
+          durationDays: parseInt(formData.durationDays) || null
+        };
+        
         if (editingItem) {
-          result = await updateMotivationalArticle(editingItem.id, formData);
+          result = await updateAcademicService(editingItem.id, serviceData);
         } else {
-          result = await addMotivationalArticle(formData);
+          result = await addAcademicService(serviceData);
         }
       }
 
@@ -147,7 +158,20 @@ const DashboardPage = () => {
 
   const handleEdit = (item) => {
     setEditingItem(item);
-    setFormData(item);
+    
+    // تحويل البيانات للنموذج
+    if (activeTab === 'academicServices') {
+      setFormData({
+        ...item,
+        durationDays: item.duration_days,
+        detailedDescription: item.detailed_description,
+        isActive: item.is_active,
+        contactInfo: item.contact_info
+      });
+    } else {
+      setFormData(item);
+    }
+    
     setShowAddForm(true);
   };
 
@@ -162,8 +186,8 @@ const DashboardPage = () => {
         result = await deleteBook(id);
       } else if (activeTab === 'blogPosts') {
         result = await deleteBlogPost(id);
-      } else if (activeTab === 'motivationalArticles') {
-        result = await deleteMotivationalArticle(id);
+      } else if (activeTab === 'academicServices') {
+        result = await deleteAcademicService(id);
       }
 
       if (result.success) {
@@ -317,11 +341,11 @@ const DashboardPage = () => {
           </div>
         </form>
       );
-    } else if (activeTab === 'motivationalArticles') {
+    } else if (activeTab === 'academicServices') {
       return (
         <form onSubmit={handleSubmit} className="dashboard-form">
           <div className="form-group">
-            <label>عنوان المقال</label>
+            <label>عنوان الخدمة</label>
             <input
               type="text"
               name="title"
@@ -332,18 +356,102 @@ const DashboardPage = () => {
           </div>
           
           <div className="form-group">
-            <label>محتوى المقال</label>
+            <label>وصف مختصر</label>
             <textarea
-              name="content"
-              value={formData.content || ''}
+              name="description"
+              value={formData.description || ''}
               onChange={handleInputChange}
-              rows="10"
+              rows="3"
               required
             />
           </div>
           
           <div className="form-group">
-            <label>رابط الصورة (اختياري)</label>
+            <label>وصف تفصيلي</label>
+            <textarea
+              name="detailedDescription"
+              value={formData.detailedDescription || ''}
+              onChange={handleInputChange}
+              rows="5"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label>التصنيف</label>
+            <select
+              name="category"
+              value={formData.category || ''}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="">اختر التصنيف</option>
+              <option value="استشارات">الاستشارات البحثية</option>
+              <option value="تحليل إحصائي">التحليل الإحصائي</option>
+              <option value="مراجعة لغوية">المراجعة اللغوية</option>
+              <option value="كتابة أكاديمية">الكتابة الأكاديمية</option>
+              <option value="ترجمة">خدمات الترجمة</option>
+              <option value="تصميم">التصميم والإخراج</option>
+              <option value="أخرى">خدمات أخرى</option>
+            </select>
+          </div>
+          
+          <div className="form-group">
+            <label>السعر (ريال)</label>
+            <input
+              type="number"
+              name="price"
+              value={formData.price || ''}
+              onChange={handleInputChange}
+              min="0"
+              step="0.01"
+              required
+            />
+          </div>
+          
+          <div className="form-group">
+            <label>مدة التنفيذ (بالأيام)</label>
+            <input
+              type="number"
+              name="durationDays"
+              value={formData.durationDays || ''}
+              onChange={handleInputChange}
+              min="1"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label>الميزات (مفصولة بفواصل)</label>
+            <input
+              type="text"
+              name="features"
+              value={formData.features ? formData.features.join(', ') : ''}
+              onChange={handleFeaturesChange}
+              placeholder="مثال: استشارة مجانية, مراجعة مجانية, ضمان الجودة"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label>المتطلبات</label>
+            <textarea
+              name="requirements"
+              value={formData.requirements || ''}
+              onChange={handleInputChange}
+              rows="3"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label>المخرجات</label>
+            <textarea
+              name="deliverables"
+              value={formData.deliverables || ''}
+              onChange={handleInputChange}
+              rows="3"
+            />
+          </div>
+          
+          <div className="form-group">
+            <label>رابط الصورة</label>
             <input
               type="url"
               name="image"
@@ -353,23 +461,25 @@ const DashboardPage = () => {
           </div>
           
           <div className="form-group">
-            <label>نص زر الدعوة للعمل</label>
+            <label>معلومات التواصل</label>
             <input
               type="text"
-              name="ctaText"
-              value={formData.ctaText || ''}
+              name="contactInfo"
+              value={formData.contactInfo || ''}
               onChange={handleInputChange}
             />
           </div>
           
-          <div className="form-group">
-            <label>رابط زر الدعوة للعمل</label>
-            <input
-              type="url"
-              name="ctaLink"
-              value={formData.ctaLink || ''}
-              onChange={handleInputChange}
-            />
+          <div className="form-group checkbox-group">
+            <label>
+              <input
+                type="checkbox"
+                name="isActive"
+                checked={formData.isActive !== undefined ? formData.isActive : true}
+                onChange={handleInputChange}
+              />
+              خدمة نشطة
+            </label>
           </div>
           
           <div className="form-actions">
@@ -390,7 +500,7 @@ const DashboardPage = () => {
     let data = [];
     if (activeTab === 'books') data = books;
     else if (activeTab === 'blogPosts') data = blogPosts;
-    else if (activeTab === 'motivationalArticles') data = motivationalArticles;
+    else if (activeTab === 'academicServices') data = academicServices;
 
     return (
       <div className="data-table">
@@ -401,6 +511,9 @@ const DashboardPage = () => {
               {activeTab === 'books' && <th>النوع</th>}
               {activeTab === 'books' && <th>السعر</th>}
               {activeTab === 'blogPosts' && <th>العلامات</th>}
+              {activeTab === 'academicServices' && <th>التصنيف</th>}
+              {activeTab === 'academicServices' && <th>السعر</th>}
+              {activeTab === 'academicServices' && <th>الحالة</th>}
               <th>تاريخ الإنشاء</th>
               <th>الإجراءات</th>
             </tr>
@@ -410,15 +523,24 @@ const DashboardPage = () => {
               <tr key={item.id}>
                 <td>{item.title}</td>
                 {activeTab === 'books' && (
-                  <td>{item.isFree ? 'مجاني' : 'مدفوع'}</td>
+                  <td>{item.isFree || item.is_free ? 'مجاني' : 'مدفوع'}</td>
                 )}
                 {activeTab === 'books' && (
-                  <td>{item.isFree ? '-' : `$${item.price}`}</td>
+                  <td>{item.isFree || item.is_free ? '-' : `${item.price} ريال`}</td>
                 )}
                 {activeTab === 'blogPosts' && (
                   <td>{item.tags ? item.tags.join(', ') : '-'}</td>
                 )}
-                <td>{new Date(item.createdAt).toLocaleDateString('ar-SA')}</td>
+                {activeTab === 'academicServices' && (
+                  <td>{item.category}</td>
+                )}
+                {activeTab === 'academicServices' && (
+                  <td>{item.price} ريال</td>
+                )}
+                {activeTab === 'academicServices' && (
+                  <td>{item.is_active ? 'نشط' : 'غير نشط'}</td>
+                )}
+                <td>{new Date(item.created_at || item.createdAt).toLocaleDateString('ar-SA')}</td>
                 <td>
                   <button 
                     onClick={() => handleEdit(item)}
@@ -473,7 +595,7 @@ const DashboardPage = () => {
             className={activeTab === 'books' ? 'active' : ''}
             onClick={() => setActiveTab('books')}
           >
-            الكتب ({books.length})
+            الكتب والحزم ({books.length})
           </button>
           <button 
             className={activeTab === 'blogPosts' ? 'active' : ''}
@@ -482,10 +604,10 @@ const DashboardPage = () => {
             التدوينات العلمية ({blogPosts.length})
           </button>
           <button 
-            className={activeTab === 'motivationalArticles' ? 'active' : ''}
-            onClick={() => setActiveTab('motivationalArticles')}
+            className={activeTab === 'academicServices' ? 'active' : ''}
+            onClick={() => setActiveTab('academicServices')}
           >
-            المقالات التحفيزية ({motivationalArticles.length})
+            الخدمات البحثية ({academicServices.length})
           </button>
         </div>
         
@@ -510,9 +632,9 @@ const DashboardPage = () => {
         {/* Data Table */}
         <div className="table-section">
           <h3>
-            {activeTab === 'books' && 'الكتب'}
+            {activeTab === 'books' && 'الكتب والحزم'}
             {activeTab === 'blogPosts' && 'التدوينات العلمية'}
-            {activeTab === 'motivationalArticles' && 'المقالات التحفيزية'}
+            {activeTab === 'academicServices' && 'الخدمات البحثية'}
           </h3>
           {loading ? (
             <div className="loading">جاري التحميل...</div>
